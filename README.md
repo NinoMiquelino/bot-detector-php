@@ -12,6 +12,16 @@
 
 # 🤖 Bot Scanner: Device Detector PHP Demo
 
+![Made with PHP](https://img.shields.io/badge/PHP-777BB4?logo=php&logoColor=white)
+![Frontend JavaScript](https://img.shields.io/badge/Frontend-JavaScript-F7DF1E?logo=javascript&logoColor=black)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?logo=tailwindcss&logoColor=white)
+![License MIT](https://img.shields.io/badge/License-MIT-green)
+![Status Stable](https://img.shields.io/badge/Status-Stable-success)
+![Version 1.0.0](https://img.shields.io/badge/Version-1.0.0-blue)
+![GitHub stars](https://img.shields.io/github/stars/NinoMiquelino/bot-detector-php?style=social)
+![GitHub forks](https://img.shields.io/github/forks/NinoMiquelino/bot-detector-php?style=social)
+![GitHub issues](https://img.shields.io/github/issues/NinoMiquelino/bot-detector-php)
+
 Este projeto demonstra como utilizar a poderosa biblioteca **`matomo/device-detector`** em um backend PHP para analisar o `User-Agent` de uma requisição e identificar se a fonte do tráfego é um navegador humano ou um bot (como Googlebot, Bingbot, Scrapers, etc.).
 
 A aplicação é útil para aprimorar a lógica de segurança e análise de tráfego, permitindo diferenciar bots de tráfego orgânico.
