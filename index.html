@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Detector: Scanner de Bots</title>
+    <meta name="author" content="Onivaldo Miquelino">     
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: ui-sans-serif, system-ui; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg">
+        <h1 class="text-3xl font-bold text-center text-indigo-700 mb-6">Device Detector: Scanner de Bots</h1>
+        
+        <div class="mb-6 p-4 rounded-lg bg-gray-50 border border-gray-200">
+            <p class="text-sm font-medium text-gray-700 mb-1">Seu User-Agent (Enviado ao Backend):</p>
+            <p id="userAgentDisplay" class="break-all font-mono text-xs text-gray-500 italic">Clique em Verificar Bot para ver o User-Agent que foi enviado...</p>
+        </div>
+
+        <div class="mt-6">
+            <button id="verifyBotBtn" class="w-full py-3 px-4 rounded-md shadow-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                Verificar Bot
+            </button>
+        </div>
+        
+        <div class="mt-8 pt-6 border-t">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Resultado da Análise:</h3>
+            <div id="statusComponent" class="p-4 rounded-md min-h-[4rem] flex items-center bg-gray-100">
+                <p id="statusMessage" class="font-medium text-gray-700">Clique em "Verificar Bot" para iniciar a análise.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ******************************************************************************
+        // ATENÇÃO: Mude esta URL para o caminho correto do seu arquivo api.php no servidor
+        // Ex: http://localhost:8001/src/api.php
+        // ******************************************************************************
+        const API_URL = 'api.php'; 
+
+        const verifyBotBtn = document.getElementById('verifyBotBtn');
+        const statusComponent = document.getElementById('statusComponent');
+        const statusMessage = document.getElementById('statusMessage');
+        const userAgentDisplay = document.getElementById('userAgentDisplay');
+
+        // --- Funções de Status ---
+
+        function updateStatus(message, bgColor = 'bg-gray-100', textColor = 'text-gray-800') {
+            statusMessage.textContent = message;
+            statusComponent.className = `p-4 rounded-md min-h-[4rem] flex items-center ${bgColor}`;
+            statusMessage.className = `font-medium ${textColor}`;
+        }
+        
+        function updateResult(isBot, message, userAgent) {
+            userAgentDisplay.textContent = userAgent;
+
+            if (isBot) {
+                updateStatus(`⚠️ BOT DETECTADO! Detalhes: ${message}`, 'bg-red-200', 'text-red-800');
+            } else {
+                updateStatus(`✅ ${message}`, 'bg-green-200', 'text-green-800');
+            }
+        }
+
+
+        // --- Ação da API ---
+
+        async function verifyBot() {
+            updateStatus('⏳ Analisando User-Agent com Device Detector...', 'bg-yellow-100', 'text-yellow-700');
+            
+            try {
+                // Requisição POST vazia. O User-Agent é enviado automaticamente pelo navegador no cabeçalho.
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({}) // Corpo vazio, o backend usa o cabeçalho
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    updateResult(result.is_bot, result.message, result.user_agent_tested);
+                } else {
+                    const errorMessage = result.error || 'Erro desconhecido na análise.';
+                    updateStatus(`❌ Falha na análise: ${errorMessage}`, 'bg-red-200', 'text-red-800');
+                }
+            } catch (error) {
+                updateStatus(`❌ Falha na comunicação: Verifique a URL da API e se o servidor PHP está rodando. Erro: ${error.message}`, 'bg-red-200', 'text-red-800');
+            }
+        }
+
+        // --- Listener ---
+        verifyBotBtn.addEventListener('click', verifyBot);
+    </script>
+</body>
+</html>
